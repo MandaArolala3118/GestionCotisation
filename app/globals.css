@@ -1,0 +1,260 @@
+/* Identité visuelle : registre comptable — papier kraft, encre verte,
+   règles horizontales façon grand-livre. Chiffres alignés à droite avec
+   chasse fixe, comme dans un vrai registre de cotisations. */
+
+:root {
+  --color-paper: #e8dcc3;
+  --color-paper-light: #f2ead9;
+  --color-ink: #24382b;
+  --color-ink-soft: #5b4636;
+  --color-accent: #2f6b4f;
+  --color-accent-dark: #1f4a36;
+  --color-alert: #8b3a3a;
+  --color-rule: #c9b896;
+  --color-rule-strong: #a5946c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background-color: var(--color-paper);
+  background-image:
+    linear-gradient(var(--color-rule) 1px, transparent 1px);
+  background-size: 100% 2.1rem;
+  background-position: 0 7.2rem;
+  color: var(--color-ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-accent-dark);
+}
+
+.container {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+}
+
+.container-narrow {
+  max-width: 26rem;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 3px solid var(--color-ink);
+  margin-bottom: 2.5rem;
+}
+
+.header h1 {
+  margin: 0;
+}
+
+h1 {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 600;
+  font-size: 2rem;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.25rem;
+}
+
+h2 {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 500;
+  font-style: italic;
+  font-size: 1.25rem;
+  margin: 0 0 1rem;
+  color: var(--color-ink);
+}
+
+.muted {
+  color: var(--color-ink-soft);
+}
+
+.section {
+  margin-bottom: 3rem;
+}
+
+.section + .section {
+  padding-top: 0.5rem;
+}
+
+/* Tableau du rapport annuel, style registre : lignes hairline, montants
+   alignés à droite avec chiffres à chasse fixe pour un alignement propre. */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.table thead th {
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--color-ink-soft);
+  padding-bottom: 0.5rem;
+  border-bottom: 1.5px solid var(--color-ink);
+}
+
+.table th:last-child,
+.table td:last-child {
+  text-align: right;
+}
+
+.table tbody td {
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--color-rule-strong);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.list li {
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--color-rule-strong);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.list li:last-child {
+  border-bottom: none;
+}
+
+.btn {
+  display: inline-block;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.6rem 1.3rem;
+  border-radius: 2px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+.btn-primary {
+  background-color: var(--color-ink);
+  color: var(--color-paper-light);
+  border-color: var(--color-ink);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-accent-dark);
+  border-color: var(--color-accent-dark);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-paper-light);
+}
+
+.btn:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  max-width: 26rem;
+}
+
+.form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--color-ink-soft);
+}
+
+.form input {
+  font-family: var(--font-body), sans-serif;
+  font-size: 1rem;
+  color: var(--color-ink);
+  background: var(--color-paper-light);
+  border: none;
+  border-bottom: 1.5px solid var(--color-rule-strong);
+  padding: 0.5rem 0.1rem;
+}
+
+.form input:focus {
+  border-bottom-color: var(--color-accent);
+}
+
+.form .btn {
+  align-self: flex-start;
+  margin-top: 0.25rem;
+}
+
+.erreur {
+  color: var(--color-alert);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.info {
+  color: var(--color-accent-dark);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.lien-retour {
+  display: inline-block;
+  margin-top: 2.5rem;
+  font-size: 0.9rem;
+  color: var(--color-ink-soft);
+  text-decoration: none;
+}
+
+.lien-retour:hover {
+  color: var(--color-ink);
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 2rem 1.25rem 4rem;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+}
