@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 function formaterMontant(valeur) {
   return `${Number(valeur).toLocaleString('fr-FR')} Ar`;

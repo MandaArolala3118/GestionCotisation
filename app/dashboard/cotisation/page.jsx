@@ -1,18 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function CotisationPage() {
   const [nom, setNom] = useState('');
   const [montant, setMontant] = useState('');
   const [datePaiement, setDatePaiement] = useState('');
-  const [message, setMessage] = useState('');
-  const [erreur, setErreur] = useState('');
 
   async function ajouterCotisation(e) {
     e.preventDefault();
-    setMessage('');
-    setErreur('');
 
     const reponse = await fetch('/api/cotisations', {
       method: 'POST',
@@ -27,11 +24,11 @@ export default function CotisationPage() {
     const donnees = await reponse.json().catch(() => ({}));
 
     if (!reponse.ok) {
-      setErreur(donnees.error || "Erreur lors de l'ajout de la cotisation.");
+      toast.error(donnees.error || "Erreur lors de l'ajout de la cotisation.");
       return;
     }
 
-    setMessage(`Cotisation ajoutée pour ${nom}.`);
+    toast.success(`Cotisation ajoutée pour ${nom}.`);
     setNom('');
     setMontant('');
     setDatePaiement('');
@@ -66,9 +63,6 @@ export default function CotisationPage() {
             Laisser vide pour utiliser la date du jour.
           </span>
         </label>
-
-        {erreur && <p className="erreur">{erreur}</p>}
-        {message && <p className="info">{message}</p>}
 
         <button type="submit" className="btn btn-primary">
           Ajouter la cotisation

@@ -1,26 +1,23 @@
 'use client';
 
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function ParametresPage() {
   const [motDePasseActuel, setMotDePasseActuel] = useState('');
   const [nouveauMotDePasse, setNouveauMotDePasse] = useState('');
   const [confirmationMotDePasse, setConfirmationMotDePasse] = useState('');
-  const [message, setMessage] = useState('');
-  const [erreur, setErreur] = useState('');
 
   async function changerMotDePasse(e) {
     e.preventDefault();
-    setMessage('');
-    setErreur('');
 
     if (nouveauMotDePasse !== confirmationMotDePasse) {
-      setErreur('Les mots de passe ne correspondent pas.');
+      toast.error('Les mots de passe ne correspondent pas.');
       return;
     }
 
     if (nouveauMotDePasse.length < 8) {
-      setErreur('Le mot de passe doit contenir au moins 8 caractères.');
+      toast.error('Le mot de passe doit contenir au moins 8 caractères.');
       return;
     }
 
@@ -36,11 +33,11 @@ export default function ParametresPage() {
     const donnees = await reponse.json().catch(() => ({}));
 
     if (!reponse.ok) {
-      setErreur(donnees.error || "Erreur lors du changement de mot de passe.");
+      toast.error(donnees.error || "Erreur lors du changement de mot de passe.");
       return;
     }
 
-    setMessage('Mot de passe changé avec succès.');
+    toast.success('Mot de passe changé avec succès.');
     setMotDePasseActuel('');
     setNouveauMotDePasse('');
     setConfirmationMotDePasse('');
@@ -82,9 +79,6 @@ export default function ParametresPage() {
             required
           />
         </label>
-
-        {erreur && <p className="erreur">{erreur}</p>}
-        {message && <p className="info">{message}</p>}
 
         <button type="submit" className="btn btn-primary">
           Changer le mot de passe

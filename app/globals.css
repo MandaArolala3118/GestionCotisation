@@ -609,6 +609,11 @@ a:focus-visible {
   color: var(--color-text);
 }
 
+.utilisateur-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
 @media (max-width: 480px) {
   .container {
     padding: 1.5rem 1rem 3rem;

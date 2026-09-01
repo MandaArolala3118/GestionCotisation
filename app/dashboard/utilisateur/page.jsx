@@ -1,12 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 export default function UtilisateurPage() {
   const [nouvelUsername, setNouvelUsername] = useState('');
   const [nouveauMotDePasse, setNouveauMotDePasse] = useState('');
-  const [message, setMessage] = useState('');
-  const [erreur, setErreur] = useState('');
   const [utilisateurs, setUtilisateurs] = useState([]);
   const [chargement, setChargement] = useState(false);
 
@@ -31,8 +30,6 @@ export default function UtilisateurPage() {
 
   async function ajouterUtilisateur(e) {
     e.preventDefault();
-    setMessage('');
-    setErreur('');
 
     const reponse = await fetch('/api/users', {
       method: 'POST',
@@ -43,11 +40,11 @@ export default function UtilisateurPage() {
     const donnees = await reponse.json().catch(() => ({}));
 
     if (!reponse.ok) {
-      setErreur(donnees.error || "Erreur lors de la création de l'utilisateur.");
+      toast.error(donnees.error || "Erreur lors de la création de l'utilisateur.");
       return;
     }
 
-    setMessage(`Utilisateur « ${nouvelUsername} » créé.`);
+    toast.success(`Utilisateur « ${nouvelUsername} » créé.`);
     setNouvelUsername('');
     setNouveauMotDePasse('');
     chargerUtilisateurs();
@@ -78,9 +75,6 @@ export default function UtilisateurPage() {
             8 caractères minimum. Stocké sous forme hachée (bcrypt).
           </span>
         </label>
-
-        {erreur && <p className="erreur">{erreur}</p>}
-        {message && <p className="info">{message}</p>}
 
         <button type="submit" className="btn btn-primary">
           Créer l&apos;utilisateur

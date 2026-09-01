@@ -1,17 +1,21 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 export default function CommunautePage() {
   const [nom, setNom] = useState('');
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [erreur, setErreur] = useState('');
   const [membres, setMembres] = useState([]);
   const [chargement, setChargement] = useState(false);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const itemsPerPage = 10;
+  
+  // État pour l'édition
+  const [membreEnEdition, setMembreEnEdition] = useState(null);
+  const [nomEdition, setNomEdition] = useState('');
+  const [emailEdition, setEmailEdition] = useState('');
 
   const chargerMembres = async () => {
     setChargement(true);
@@ -40,8 +44,6 @@ export default function CommunautePage() {
 
   async function ajouterMembre(e) {
     e.preventDefault();
-    setMessage('');
-    setErreur('');
 
     const reponse = await fetch('/api/communaute', {
       method: 'POST',
@@ -55,13 +57,68 @@ export default function CommunautePage() {
     const donnees = await reponse.json().catch(() => ({}));
 
     if (!reponse.ok) {
-      setErreur(donnees.error || "Erreur lors de l'ajout du membre.");
+      toast.error(donnees.error || "Erreur lors de l'ajout du membre.");
       return;
     }
 
-    setMessage(`Membre ${nom} ajouté à la communauté.`);
+    toast.success(`Membre ${nom} ajouté à la communauté.`);
     setNom('');
     setEmail('');
+    chargerMembres();
+  }
+
+  async function supprimerMembre(id) {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce membre ?')) {
+      return;
+    }
+
+    const reponse = await fetch(`/api/communaute/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (!reponse.ok) {
+      const donnees = await reponse.json().catch(() => ({}));
+      toast.error(donnees.error || "Erreur lors de la suppression du membre.");
+      return;
+    }
+
+    toast.success('Membre supprimé avec succès.');
+    chargerMembres();
+  }
+
+  function demarrerEdition(membre) {
+    setMembreEnEdition(membre.id);
+    setNomEdition(membre.nom);
+    setEmailEdition(membre.email);
+  }
+
+  function annulerEdition() {
+    setMembreEnEdition(null);
+    setNomEdition('');
+    setEmailEdition('');
+  }
+
+  async function mettreAJourMembre(e) {
+    e.preventDefault();
+
+    const reponse = await fetch(`/api/communaute/${membreEnEdition}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nom: nomEdition,
+        email: emailEdition,
+      }),
+    });
+
+    const donnees = await reponse.json().catch(() => ({}));
+
+    if (!reponse.ok) {
+      toast.error(donnees.error || "Erreur lors de la mise à jour du membre.");
+      return;
+    }
+
+    toast.success('Membre mis à jour avec succès.');
+    annulerEdition();
     chargerMembres();
   }
 
@@ -91,9 +148,6 @@ export default function CommunautePage() {
           />
         </label>
 
-        {erreur && <p className="erreur">{erreur}</p>}
-        {message && <p className="info">{message}</p>}
-
         <button type="submit" className="btn btn-primary">
           Ajouter à la communauté
         </button>
@@ -117,17 +171,68 @@ export default function CommunautePage() {
             <div className="utilisateurs-list">
               {membres.map((membre) => (
                 <div key={membre.id} className="utilisateur-item">
-                  <div className="utilisateur-info">
-                    <span className="utilisateur-username">{membre.nom}</span>
-                    <span className="muted">{membre.email}</span>
-                    <span className="muted">
-                      Ajouté le {new Date(membre.created_at).toLocaleDateString('fr-FR', {
-                        day: '2-digit',
-                        month: 'long',
-                        year: 'numeric',
-                      })}
-                    </span>
-                  </div>
+                  {membreEnEdition === membre.id ? (
+                    <form onSubmit={mettreAJourMembre} className="form" style={{ width: '100%' }}>
+                      <label>
+                        Nom
+                        <input
+                          value={nomEdition}
+                          onChange={(e) => setNomEdition(e.target.value)}
+                          required
+                        />
+                      </label>
+                      <label>
+                        Email
+                        <input
+                          type="email"
+                          value={emailEdition}
+                          onChange={(e) => setEmailEdition(e.target.value)}
+                          required
+                        />
+                      </label>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button type="submit" className="btn btn-primary btn-sm">
+                          Enregistrer
+                        </button>
+                        <button 
+                          type="button" 
+                          onClick={annulerEdition}
+                          className="btn btn-secondary btn-sm"
+                        >
+                          Annuler
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <>
+                      <div className="utilisateur-info">
+                        <span className="utilisateur-username">{membre.nom}</span>
+                        <span className="muted">{membre.email}</span>
+                        <span className="muted">
+                          Ajouté le {new Date(membre.created_at).toLocaleDateString('fr-FR', {
+                            day: '2-digit',
+                            month: 'long',
+                            year: 'numeric',
+                          })}
+                        </span>
+                      </div>
+                      <div className="utilisateur-actions">
+                        <button
+                          onClick={() => demarrerEdition(membre)}
+                          className="btn btn-secondary btn-sm"
+                        >
+                          Modifier
+                        </button>
+                        <button
+                          onClick={() => supprimerMembre(membre.id)}
+                          className="btn btn-secondary btn-sm"
+                          style={{ color: 'var(--color-danger)', borderColor: 'var(--color-danger)' }}
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
