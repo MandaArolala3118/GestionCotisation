@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getSupabaseAdmin } from '../../../lib/supabaseAdmin';
 import { verifySessionToken, SESSION_COOKIE_NAME } from '../../../lib/session';
+import { sendBulkEmail } from '../../../lib/email';
 
 async function getSession() {
   const cookieStore = await cookies();
@@ -48,5 +49,48 @@ export async function POST(request) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  // Récupérer les emails de la communauté
+  const { data: membres, error: errorMembres } = await getSupabaseAdmin()
+    .from('communaute')
+    .select('email');
+
+  if (!errorMembres && membres && membres.length > 0) {
+    const emails = membres.map(m => m.email);
+    const montantNumerique = Number(montant);
+    const typeOperation = montantNumerique >= 0 ? 'versement' : 'dépense';
+    const montantAbsolu = Math.abs(montantNumerique);
+    const montantFormate = montantAbsolu.toLocaleString('fr-FR') + ' Ar';
+
+    const subject = `Nouvelle ${typeOperation} : ${montantFormate} de ${nom}`;
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: ${montantNumerique >= 0 ? '#28a745' : '#dc3545'};">
+          Nouvelle ${typeOperation}
+        </h2>
+        <p>Bonjour,</p>
+        <p>Une nouvelle ${typeOperation} a été enregistrée :</p>
+        <ul>
+          <li><strong>Nom :</strong> ${nom}</li>
+          <li><strong>Montant :</strong> ${montantFormate}</li>
+          <li><strong>Type :</strong> ${typeOperation.charAt(0).toUpperCase() + typeOperation.slice(1)}</li>
+          <li><strong>Date :</strong> ${new Date(data.date_paiement).toLocaleDateString('fr-FR', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+          })}</li>
+        </ul>
+        <p style="color: #666; font-size: 0.9em;">
+          Ceci est un message automatique. Merci de ne pas répondre.
+        </p>
+      </div>
+    `;
+
+    // Envoyer les emails en arrière-plan (ne pas bloquer la réponse)
+    sendBulkEmail(emails, subject, html).catch(err => {
+      console.error('Erreur lors de l\'envoi des emails à la communauté:', err);
+    });
+  }
+
   return NextResponse.json({ cotisation: data }, { status: 201 });
 }
