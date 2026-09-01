@@ -7,9 +7,13 @@ export default function CotisationPage() {
   const [nom, setNom] = useState('');
   const [montant, setMontant] = useState('');
   const [datePaiement, setDatePaiement] = useState('');
+  const [chargement, setChargement] = useState(false);
 
   async function ajouterCotisation(e) {
     e.preventDefault();
+    
+    if (chargement) return;
+    setChargement(true);
 
     const reponse = await fetch('/api/cotisations', {
       method: 'POST',
@@ -25,6 +29,7 @@ export default function CotisationPage() {
 
     if (!reponse.ok) {
       toast.error(donnees.error || "Erreur lors de l'ajout de la cotisation.");
+      setChargement(false);
       return;
     }
 
@@ -32,6 +37,7 @@ export default function CotisationPage() {
     setNom('');
     setMontant('');
     setDatePaiement('');
+    setChargement(false);
   }
 
   return (
@@ -64,8 +70,12 @@ export default function CotisationPage() {
           </span>
         </label>
 
-        <button type="submit" className="btn btn-primary">
-          Ajouter la cotisation
+        <button 
+          type="submit" 
+          className="btn btn-primary"
+          disabled={chargement}
+        >
+          {chargement ? 'Ajout en cours...' : 'Ajouter la cotisation'}
         </button>
       </form>
     </section>

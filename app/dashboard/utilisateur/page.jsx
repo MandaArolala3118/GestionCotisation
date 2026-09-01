@@ -7,10 +7,11 @@ export default function UtilisateurPage() {
   const [nouvelUsername, setNouvelUsername] = useState('');
   const [nouveauMotDePasse, setNouveauMotDePasse] = useState('');
   const [utilisateurs, setUtilisateurs] = useState([]);
+  const [chargementListe, setChargementListe] = useState(false);
   const [chargement, setChargement] = useState(false);
 
   async function chargerUtilisateurs() {
-    setChargement(true);
+    setChargementListe(true);
     try {
       const reponse = await fetch('/api/users');
       const donnees = await reponse.json();
@@ -20,7 +21,7 @@ export default function UtilisateurPage() {
     } catch (error) {
       console.error('Erreur lors du chargement des utilisateurs:', error);
     } finally {
-      setChargement(false);
+      setChargementListe(false);
     }
   }
 
@@ -30,6 +31,9 @@ export default function UtilisateurPage() {
 
   async function ajouterUtilisateur(e) {
     e.preventDefault();
+    
+    if (chargement) return;
+    setChargement(true);
 
     const reponse = await fetch('/api/users', {
       method: 'POST',
@@ -41,12 +45,14 @@ export default function UtilisateurPage() {
 
     if (!reponse.ok) {
       toast.error(donnees.error || "Erreur lors de la création de l'utilisateur.");
+      setChargement(false);
       return;
     }
 
     toast.success(`Utilisateur « ${nouvelUsername} » créé.`);
     setNouvelUsername('');
     setNouveauMotDePasse('');
+    setChargement(false);
     chargerUtilisateurs();
   }
 
@@ -76,14 +82,18 @@ export default function UtilisateurPage() {
           </span>
         </label>
 
-        <button type="submit" className="btn btn-primary">
-          Créer l&apos;utilisateur
+        <button 
+          type="submit" 
+          className="btn btn-primary"
+          disabled={chargement}
+        >
+          {chargement ? 'Création en cours...' : 'Créer l&apos;utilisateur'}
         </button>
       </form>
 
       <div className="section">
         <h3>Utilisateurs existants</h3>
-        {chargement ? (
+        {chargementListe ? (
           <p className="muted">Chargement des utilisateurs...</p>
         ) : utilisateurs.length === 0 ? (
           <p className="muted">Aucun utilisateur existant.</p>

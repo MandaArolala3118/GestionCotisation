@@ -7,6 +7,7 @@ export default function CommunautePage() {
   const [nom, setNom] = useState('');
   const [email, setEmail] = useState('');
   const [membres, setMembres] = useState([]);
+  const [chargementListe, setChargementListe] = useState(false);
   const [chargement, setChargement] = useState(false);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -18,7 +19,7 @@ export default function CommunautePage() {
   const [emailEdition, setEmailEdition] = useState('');
 
   const chargerMembres = async () => {
-    setChargement(true);
+    setChargementListe(true);
     try {
       const params = new URLSearchParams({
         page: page.toString(),
@@ -34,7 +35,7 @@ export default function CommunautePage() {
     } catch (error) {
       console.error('Erreur lors du chargement des membres:', error);
     } finally {
-      setChargement(false);
+      setChargementListe(false);
     }
   };
 
@@ -44,6 +45,9 @@ export default function CommunautePage() {
 
   async function ajouterMembre(e) {
     e.preventDefault();
+    
+    if (chargement) return;
+    setChargement(true);
 
     const reponse = await fetch('/api/communaute', {
       method: 'POST',
@@ -58,12 +62,14 @@ export default function CommunautePage() {
 
     if (!reponse.ok) {
       toast.error(donnees.error || "Erreur lors de l'ajout du membre.");
+      setChargement(false);
       return;
     }
 
     toast.success(`Membre ${nom} ajouté à la communauté.`);
     setNom('');
     setEmail('');
+    setChargement(false);
     chargerMembres();
   }
 
@@ -148,15 +154,19 @@ export default function CommunautePage() {
           />
         </label>
 
-        <button type="submit" className="btn btn-primary">
-          Ajouter à la communauté
+        <button 
+          type="submit" 
+          className="btn btn-primary"
+          disabled={chargement}
+        >
+          {chargement ? 'Ajout en cours...' : 'Ajouter à la communauté'}
         </button>
       </form>
 
       {/* Liste des membres avec pagination */}
       <div className="section">
         <h3>Membres de la communauté</h3>
-        {chargement ? (
+        {chargementListe ? (
           <p className="muted">Chargement des membres...</p>
         ) : membres.length === 0 ? (
           <p className="muted">Aucun membre dans la communauté.</p>

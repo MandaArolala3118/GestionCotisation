@@ -7,17 +7,24 @@ export default function ParametresPage() {
   const [motDePasseActuel, setMotDePasseActuel] = useState('');
   const [nouveauMotDePasse, setNouveauMotDePasse] = useState('');
   const [confirmationMotDePasse, setConfirmationMotDePasse] = useState('');
+  const [chargementMotDePasse, setChargementMotDePasse] = useState(false);
+  const [chargementReset, setChargementReset] = useState(false);
 
   async function changerMotDePasse(e) {
     e.preventDefault();
+    
+    if (chargementMotDePasse) return;
+    setChargementMotDePasse(true);
 
     if (nouveauMotDePasse !== confirmationMotDePasse) {
       toast.error('Les mots de passe ne correspondent pas.');
+      setChargementMotDePasse(false);
       return;
     }
 
     if (nouveauMotDePasse.length < 8) {
       toast.error('Le mot de passe doit contenir au moins 8 caractères.');
+      setChargementMotDePasse(false);
       return;
     }
 
@@ -34,6 +41,7 @@ export default function ParametresPage() {
 
     if (!reponse.ok) {
       toast.error(donnees.error || "Erreur lors du changement de mot de passe.");
+      setChargementMotDePasse(false);
       return;
     }
 
@@ -41,12 +49,16 @@ export default function ParametresPage() {
     setMotDePasseActuel('');
     setNouveauMotDePasse('');
     setConfirmationMotDePasse('');
+    setChargementMotDePasse(false);
   }
 
   async function resetDatabase() {
     if (!confirm('Êtes-vous sûr de vouloir réinitialiser la base de données ?\n\nCette action va supprimer :\n- Toutes les cotisations\n- Tous les membres de la communauté\n\nLes utilisateurs seront conservés.\n\nCette action est irréversible !')) {
       return;
     }
+    
+    if (chargementReset) return;
+    setChargementReset(true);
 
     const reponse = await fetch('/api/reset-database', {
       method: 'POST',
@@ -56,10 +68,12 @@ export default function ParametresPage() {
 
     if (!reponse.ok) {
       toast.error(donnees.error || "Erreur lors de la réinitialisation de la base de données.");
+      setChargementReset(false);
       return;
     }
 
     toast.success('Base de données réinitialisée avec succès.');
+    setChargementReset(false);
   }
 
   return (
@@ -99,8 +113,12 @@ export default function ParametresPage() {
           />
         </label>
 
-        <button type="submit" className="btn btn-primary">
-          Changer le mot de passe
+        <button 
+          type="submit" 
+          className="btn btn-primary"
+          disabled={chargementMotDePasse}
+        >
+          {chargementMotDePasse ? 'Changement en cours...' : 'Changer le mot de passe'}
         </button>
       </form>
 
@@ -112,13 +130,14 @@ export default function ParametresPage() {
         <button
           onClick={resetDatabase}
           className="btn btn-secondary"
+          disabled={chargementReset}
           style={{ 
             color: 'var(--color-danger)', 
             borderColor: 'var(--color-danger)',
             width: '100%'
           }}
         >
-          Réinitialiser la base de données
+          {chargementReset ? 'Réinitialisation en cours...' : 'Réinitialiser la base de données'}
         </button>
         <p className="muted" style={{ fontSize: '0.8rem', marginTop: '0.5rem' }}>
           Supprime toutes les cotisations et tous les membres de la communauté. Les utilisateurs sont conservés.
