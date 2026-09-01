@@ -92,10 +92,17 @@ export async function POST(request) {
       </div>
     `;
 
-    // Envoyer les emails en arrière-plan (ne pas bloquer la réponse)
-    sendBulkEmail(emails, subject, html).catch(err => {
+    // Attendre que tous les emails soient envoyés avant de retourner la réponse
+    try {
+      const results = await sendBulkEmail(emails, subject, html);
+      const failedEmails = results.filter(r => !r.success);
+      
+      if (failedEmails.length > 0) {
+        console.error('Erreurs lors de l\'envoi des emails:', failedEmails);
+      }
+    } catch (err) {
       console.error('Erreur lors de l\'envoi des emails à la communauté:', err);
-    });
+    }
   }
 
   return NextResponse.json({ cotisation: data }, { status: 201 });
