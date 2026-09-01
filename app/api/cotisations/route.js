@@ -80,7 +80,13 @@ export async function POST(request) {
             year: 'numeric',
           })}</li>
         </ul>
-        <p style="color: #666; font-size: 0.9em;">
+        <p style="margin-top: 2rem;">
+          <a href="https://gestion-cotisation-virid.vercel.app/" 
+             style="background-color: #8B7355; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
+            Voir le registre des cotisations
+          </a>
+        </p>
+        <p style="color: #666; font-size: 0.9em; margin-top: 1.5rem;">
           Ceci est un message automatique. Merci de ne pas répondre.
         </p>
       </div>

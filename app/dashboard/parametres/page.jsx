@@ -43,6 +43,25 @@ export default function ParametresPage() {
     setConfirmationMotDePasse('');
   }
 
+  async function resetDatabase() {
+    if (!confirm('Êtes-vous sûr de vouloir réinitialiser la base de données ?\n\nCette action va supprimer :\n- Toutes les cotisations\n- Tous les membres de la communauté\n\nLes utilisateurs seront conservés.\n\nCette action est irréversible !')) {
+      return;
+    }
+
+    const reponse = await fetch('/api/reset-database', {
+      method: 'POST',
+    });
+
+    const donnees = await reponse.json().catch(() => ({}));
+
+    if (!reponse.ok) {
+      toast.error(donnees.error || "Erreur lors de la réinitialisation de la base de données.");
+      return;
+    }
+
+    toast.success('Base de données réinitialisée avec succès.');
+  }
+
   return (
     <section className="section">
       <h2>Paramètres du compte</h2>
@@ -84,6 +103,27 @@ export default function ParametresPage() {
           Changer le mot de passe
         </button>
       </form>
+
+      <div className="section" style={{ marginTop: '3rem', borderTop: '2px solid var(--color-border)', paddingTop: '2rem' }}>
+        <h2 style={{ color: 'var(--color-danger)' }}>Zone de danger</h2>
+        <p className="muted" style={{ marginBottom: '1rem' }}>
+          Actions irréversibles sur la base de données
+        </p>
+        <button
+          onClick={resetDatabase}
+          className="btn btn-secondary"
+          style={{ 
+            color: 'var(--color-danger)', 
+            borderColor: 'var(--color-danger)',
+            width: '100%'
+          }}
+        >
+          Réinitialiser la base de données
+        </button>
+        <p className="muted" style={{ fontSize: '0.8rem', marginTop: '0.5rem' }}>
+          Supprime toutes les cotisations et tous les membres de la communauté. Les utilisateurs sont conservés.
+        </p>
+      </div>
     </section>
   );
 }
