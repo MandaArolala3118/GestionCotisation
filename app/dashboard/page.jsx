@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -19,6 +20,17 @@ export default function DashboardPage() {
   const [erreurUtilisateur, setErreurUtilisateur] = useState('');
   const [utilisateurs, setUtilisateurs] = useState([]);
   const [chargementUtilisateurs, setChargementUtilisateurs] = useState(false);
+
+  // Communauté
+  const [nomCommunaute, setNomCommunaute] = useState('');
+  const [emailCommunaute, setEmailCommunaute] = useState('');
+  const [messageCommunaute, setMessageCommunaute] = useState('');
+  const [erreurCommunaute, setErreurCommunaute] = useState('');
+  const [membresCommunaute, setMembresCommunaute] = useState([]);
+  const [chargementCommunaute, setChargementCommunaute] = useState(false);
+  const [pageCommunaute, setPageCommunaute] = useState(1);
+  const [totalCommunaute, setTotalCommunaute] = useState(0);
+  const itemsPerPageCommunaute = 10;
 
   // Paramètres - changement de mot de passe
   const [motDePasseActuel, setMotDePasseActuel] = useState('');
@@ -47,6 +59,60 @@ export default function DashboardPage() {
       chargerUtilisateurs();
     }
   }, [ongletActif]);
+
+  useEffect(() => {
+    if (ongletActif === 'communaute') {
+      chargerCommunaute();
+    }
+  }, [ongletActif, pageCommunaute]);
+
+  async function chargerCommunaute() {
+    setChargementCommunaute(true);
+    try {
+      const params = new URLSearchParams({
+        page: pageCommunaute.toString(),
+        limit: itemsPerPageCommunaute.toString(),
+      });
+      
+      const reponse = await fetch(`/api/communaute?${params}`);
+      const donnees = await reponse.json();
+      if (reponse.ok) {
+        setMembresCommunaute(donnees.membres || []);
+        setTotalCommunaute(donnees.total || 0);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement de la communauté:', error);
+    } finally {
+      setChargementCommunaute(false);
+    }
+  }
+
+  async function ajouterMembreCommunaute(e) {
+    e.preventDefault();
+    setMessageCommunaute('');
+    setErreurCommunaute('');
+
+    const reponse = await fetch('/api/communaute', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nom: nomCommunaute,
+        email: emailCommunaute,
+      }),
+    });
+
+    const donnees = await reponse.json().catch(() => ({}));
+
+    if (!reponse.ok) {
+      setErreurCommunaute(donnees.error || "Erreur lors de l'ajout du membre.");
+      return;
+    }
+
+    setMessageCommunaute(`Membre ${nomCommunaute} ajouté à la communauté.`);
+    setNomCommunaute('');
+    setEmailCommunaute('');
+    chargerCommunaute();
+  }
 
   async function ajouterCotisation(e) {
     e.preventDefault();
@@ -167,6 +233,12 @@ export default function DashboardPage() {
           Créer un utilisateur
         </button>
         <button
+          className={`tab ${ongletActif === 'communaute' ? 'tab-active' : ''}`}
+          onClick={() => setOngletActif('communaute')}
+        >
+          Communauté
+        </button>
+        <button
           className={`tab ${ongletActif === 'parametres' ? 'tab-active' : ''}`}
           onClick={() => setOngletActif('parametres')}
         >
@@ -271,6 +343,101 @@ export default function DashboardPage() {
                   </div>
                 ))}
               </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {ongletActif === 'communaute' && (
+        <section className="section">
+          <h2>Gestion de la communauté</h2>
+          
+          {/* Formulaire d'ajout */}
+          <form onSubmit={ajouterMembreCommunaute} className="form" style={{ marginBottom: '2rem' }}>
+            <label>
+              Nom
+              <input
+                value={nomCommunaute}
+                onChange={(e) => setNomCommunaute(e.target.value)}
+                required
+              />
+            </label>
+            <label>
+              Email
+              <input
+                type="email"
+                value={emailCommunaute}
+                onChange={(e) => setEmailCommunaute(e.target.value)}
+                required
+              />
+            </label>
+
+            {erreurCommunaute && <p className="erreur">{erreurCommunaute}</p>}
+            {messageCommunaute && <p className="info">{messageCommunaute}</p>}
+
+            <button type="submit" className="btn btn-primary">
+              Ajouter à la communauté
+            </button>
+          </form>
+
+          {/* Liste des membres avec pagination */}
+          <div className="section">
+            <h3>Membres de la communauté</h3>
+            {chargementCommunaute ? (
+              <p className="muted">Chargement des membres...</p>
+            ) : membresCommunaute.length === 0 ? (
+              <p className="muted">Aucun membre dans la communauté.</p>
+            ) : (
+              <>
+                <div className="results-info">
+                  <span className="muted">
+                    {totalCommunaute} membre{totalCommunaute !== 1 ? 's' : ''} trouvé{totalCommunaute !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                
+                <div className="utilisateurs-list">
+                  {membresCommunaute.map((membre) => (
+                    <div key={membre.id} className="utilisateur-item">
+                      <div className="utilisateur-info">
+                        <span className="utilisateur-username">{membre.nom}</span>
+                        <span className="muted">{membre.email}</span>
+                        <span className="muted">
+                          Ajouté le {new Date(membre.created_at).toLocaleDateString('fr-FR', {
+                            day: '2-digit',
+                            month: 'long',
+                            year: 'numeric',
+                          })}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {Math.ceil(totalCommunaute / itemsPerPageCommunaute) > 1 && (
+                  <div className="pagination">
+                    <button
+                      onClick={() => setPageCommunaute(Math.max(1, pageCommunaute - 1))}
+                      disabled={pageCommunaute === 1}
+                      className="btn btn-secondary btn-sm"
+                    >
+                      ← Précédent
+                    </button>
+                    
+                    <span className="pagination-info">
+                      Page {pageCommunaute} sur {Math.ceil(totalCommunaute / itemsPerPageCommunaute)}
+                    </span>
+                    
+                    <button
+                      onClick={() => setPageCommunaute(Math.min(Math.ceil(totalCommunaute / itemsPerPageCommunaute), pageCommunaute + 1))}
+                      disabled={pageCommunaute === Math.ceil(totalCommunaute / itemsPerPageCommunaute)}
+                      className="btn btn-secondary btn-sm"
+                    >
+                      Suivant →
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </section>
