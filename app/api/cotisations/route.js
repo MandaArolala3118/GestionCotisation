@@ -4,7 +4,8 @@ import { getSupabaseAdmin } from '../../../lib/supabaseAdmin';
 import { verifySessionToken, SESSION_COOKIE_NAME } from '../../../lib/session';
 
 async function getSession() {
-  const token = cookies().get(SESSION_COOKIE_NAME)?.value;
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   return token ? verifySessionToken(token) : null;
 }
 
@@ -32,9 +33,6 @@ export async function POST(request) {
 
   if (!nom || montant === undefined || montant === null || Number.isNaN(Number(montant))) {
     return NextResponse.json({ error: 'Nom et montant sont requis.' }, { status: 400 });
-  }
-  if (Number(montant) < 0) {
-    return NextResponse.json({ error: 'Le montant ne peut pas être négatif.' }, { status: 400 });
   }
 
   const { data, error } = await getSupabaseAdmin()

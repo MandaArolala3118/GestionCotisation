@@ -48,16 +48,8 @@ async function getPayeursRecents() {
 
   if (error || !data) return [];
 
-  // Un même nom peut apparaître plusieurs fois : on ne garde que le paiement le plus récent.
-  const dejaVus = new Set();
-  const resultat = [];
-  for (const cotisation of data) {
-    if (!dejaVus.has(cotisation.nom)) {
-      dejaVus.add(cotisation.nom);
-      resultat.push(cotisation);
-    }
-  }
-  return resultat;
+  // On garde tous les paiements, y compris les montants négatifs
+  return data;
 }
 
 export default async function HomePage() {
@@ -135,17 +127,23 @@ export default async function HomePage() {
             {payeurs.length === 0 ? (
               <p className="muted">Personne n&apos;a encore payé ce trimestre.</p>
             ) : (
-              <ul className="list">
-                {payeurs.map((payeur) => (
-                  <li key={payeur.nom}>
+              <div className="payeurs-list">
+                {payeurs.map((payeur, index) => (
+                  <div 
+                    key={`${payeur.nom}-${payeur.date_paiement}-${index}`}
+                    className="payeur-item"
+                    style={payeur.montant < 0 ? { backgroundColor: '#ffe5e5' } : {}}
+                  >
                     <div className="payeur-info">
                       <span className="payeur-nom">{payeur.nom}</span>
                       <span className="muted">{formaterDate(payeur.date_paiement)}</span>
                     </div>
-                    <span className="payeur-montant">{formaterMontant(payeur.montant)}</span>
-                  </li>
+                    <span className={`payeur-montant ${payeur.montant < 0 ? 'payeur-montant-negative' : ''}`}>
+                      {formaterMontant(payeur.montant)}
+                    </span>
+                  </div>
                 ))}
-              </ul>
+              </div>
             )}
           </section>
         </>
