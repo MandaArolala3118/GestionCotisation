@@ -19,12 +19,19 @@ export async function POST(request) {
     .eq('username', username)
     .maybeSingle();
 
-  if (error || !utilisateur) {
+  if (error) {
+    console.error('[login] erreur Supabase :', error.message);
+    return NextResponse.json({ error: 'Identifiants invalides.' }, { status: 401 });
+  }
+
+  if (!utilisateur) {
+    console.error(`[login] aucun utilisateur trouvé pour "${username}"`);
     return NextResponse.json({ error: 'Identifiants invalides.' }, { status: 401 });
   }
 
   const motDePasseValide = await verifyPassword(password, utilisateur.password_hash);
   if (!motDePasseValide) {
+    console.error(`[login] mot de passe incorrect pour "${username}"`);
     return NextResponse.json({ error: 'Identifiants invalides.' }, { status: 401 });
   }
 

@@ -42,7 +42,7 @@ async function getPayeursRecents() {
 
   const { data, error } = await getSupabaseAdmin()
     .from('cotisations')
-    .select('nom, date_paiement')
+    .select('nom, montant, date_paiement')
     .gte('date_paiement', dateLimiteIso)
     .order('date_paiement', { ascending: false });
 
@@ -86,47 +86,63 @@ export default async function HomePage() {
       </div>
 
       {erreurChargement ? (
-        <p className="erreur">
-          Le registre est momentanément indisponible. Vérifie la configuration Supabase.
-        </p>
+        <div className="section">
+          <p className="erreur">
+            Le registre est momentanément indisponible. Vérifie la configuration Supabase.
+          </p>
+        </div>
       ) : (
         <>
           <section className="section">
-            <h2>Cotisations par année</h2>
+            <div className="section-header">
+              <h2>Cotisations par année</h2>
+              <Link href="/rapports" className="lien-section">
+                Voir rapport
+              </Link>
+            </div>
             {rapport.length === 0 ? (
               <p className="muted">Aucune cotisation enregistrée pour le moment.</p>
             ) : (
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Année</th>
-                    <th>Paiements</th>
-                    <th>Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rapport.map((ligne) => (
-                    <tr key={ligne.annee}>
-                      <td>{ligne.annee}</td>
-                      <td>{ligne.nombre}</td>
-                      <td>{formaterMontant(ligne.total)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="cards-grid">
+                {rapport.map((ligne) => (
+                  <div key={ligne.annee} className="card">
+                    <div className="card-header">
+                      <span className="card-year">{ligne.annee}</span>
+                    </div>
+                    <div className="card-body">
+                      <div className="card-stat">
+                        <span className="card-label">Paiements</span>
+                        <span className="card-value">{ligne.nombre}</span>
+                      </div>
+                      <div className="card-stat">
+                        <span className="card-label">Total</span>
+                        <span className="card-value card-value-primary">{formaterMontant(ligne.total)}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </section>
 
           <section className="section">
-            <h2>Ont payé ces 3 derniers mois</h2>
+            <div className="section-header">
+              <h2>Ont payé ces 3 derniers mois</h2>
+              <Link href="/paiements" className="lien-section">
+                Voir tous les paiements
+              </Link>
+            </div>
             {payeurs.length === 0 ? (
               <p className="muted">Personne n&apos;a encore payé ce trimestre.</p>
             ) : (
               <ul className="list">
                 {payeurs.map((payeur) => (
                   <li key={payeur.nom}>
-                    <span>{payeur.nom}</span>
-                    <span className="muted">{formaterDate(payeur.date_paiement)}</span>
+                    <div className="payeur-info">
+                      <span className="payeur-nom">{payeur.nom}</span>
+                      <span className="muted">{formaterDate(payeur.date_paiement)}</span>
+                    </div>
+                    <span className="payeur-montant">{formaterMontant(payeur.montant)}</span>
                   </li>
                 ))}
               </ul>

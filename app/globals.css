@@ -1,17 +1,15 @@
-/* Identité visuelle : registre comptable — papier kraft, encre verte,
-   règles horizontales façon grand-livre. Chiffres alignés à droite avec
-   chasse fixe, comme dans un vrai registre de cotisations. */
+/* Design élégant et moderne pour une meilleure lisibilité */
 
 :root {
-  --color-paper: #e8dcc3;
-  --color-paper-light: #f2ead9;
-  --color-ink: #24382b;
-  --color-ink-soft: #5b4636;
-  --color-accent: #2f6b4f;
-  --color-accent-dark: #1f4a36;
-  --color-alert: #8b3a3a;
-  --color-rule: #c9b896;
-  --color-rule-strong: #a5946c;
+  --color-bg: #fafafa;
+  --color-bg-secondary: #f5f5f5;
+  --color-text: #2c2c2c;
+  --color-text-muted: #757575;
+  --color-primary: #4a6fa5;
+  --color-primary-dark: #3a5a8a;
+  --color-danger: #c74444;
+  --color-border: #e0e0e0;
+  --color-border-light: #e8e8e8;
 }
 
 * {
@@ -25,26 +23,29 @@ body {
 }
 
 body {
-  background-color: var(--color-paper);
-  background-image:
-    linear-gradient(var(--color-rule) 1px, transparent 1px);
-  background-size: 100% 2.1rem;
-  background-position: 0 7.2rem;
-  color: var(--color-ink);
-  font-family: var(--font-body), system-ui, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
 }
 
 a {
-  color: var(--color-accent-dark);
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 .container {
   max-width: 42rem;
   margin: 0 auto;
   padding: 3rem 1.5rem 5rem;
+  min-height: calc(100vh - 6rem);
 }
 
 .container-narrow {
@@ -53,12 +54,12 @@ a {
 
 .header {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
   padding-bottom: 1.5rem;
-  border-bottom: 3px solid var(--color-ink);
-  margin-bottom: 2.5rem;
+  border-bottom: 2px solid var(--color-border);
+  margin-bottom: 2rem;
 }
 
 .header h1 {
@@ -66,49 +67,260 @@ a {
 }
 
 h1 {
-  font-family: var(--font-display), Georgia, serif;
   font-weight: 600;
-  font-size: 2rem;
-  letter-spacing: -0.01em;
-  margin: 0 0 0.25rem;
+  font-size: 1.75rem;
+  margin: 0 0 0.5rem;
+  color: var(--color-text);
 }
 
 h2 {
-  font-family: var(--font-display), Georgia, serif;
-  font-weight: 500;
-  font-style: italic;
+  font-weight: 600;
   font-size: 1.25rem;
   margin: 0 0 1rem;
-  color: var(--color-ink);
+  color: var(--color-text);
+}
+
+.section-header h2 {
+  margin: 0;
+}
+
+.section-header + * {
+  margin-top: 0;
 }
 
 .muted {
-  color: var(--color-ink-soft);
+  color: var(--color-text-muted);
 }
 
 .section {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 .section + .section {
-  padding-top: 0.5rem;
+  padding-top: 1rem;
 }
 
-/* Tableau du rapport annuel, style registre : lignes hairline, montants
-   alignés à droite avec chiffres à chasse fixe pour un alignement propre. */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.lien-section {
+  font-size: 0.9rem;
+  color: var(--color-primary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.lien-section:hover {
+  text-decoration: underline;
+}
+
+.filtres-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1rem;
+}
+
+.filtre-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.filtre-item label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.filtre-input {
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  transition: border-color 0.2s ease;
+}
+
+.filtre-input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+.results-info {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.pagination-info {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+.annee-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.annee-selector label {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.annee-select {
+  font-size: 1rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.annee-select:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+.resume-annuel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.resume-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.resume-label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.resume-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume-value-primary {
+  color: var(--color-primary);
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(74, 111, 165, 0.15);
+  transform: translateY(-2px);
+}
+
+.card-header {
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg) 100%);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.card-year {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.card-body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.card-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.card-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.card-value-primary {
+  color: var(--color-primary);
+  font-size: 1.1rem;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
   font-variant-numeric: tabular-nums;
+  background: var(--color-bg);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
 }
 
 .table thead th {
   text-align: left;
-  font-weight: 500;
-  font-size: 0.85rem;
-  color: var(--color-ink-soft);
-  padding-bottom: 0.5rem;
-  border-bottom: 1.5px solid var(--color-ink);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg) 100%);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .table th:last-child,
@@ -117,71 +329,111 @@ h2 {
 }
 
 .table tbody td {
-  padding: 0.65rem 0;
-  border-bottom: 1px solid var(--color-rule-strong);
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .table tbody tr:last-child td {
   border-bottom: none;
 }
 
+.table tbody tr:hover {
+  background: var(--color-bg-secondary);
+}
+
 .list {
   list-style: none;
   margin: 0;
   padding: 0;
+  background: var(--color-bg);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  overflow: hidden;
 }
 
 .list li {
-  padding: 0.65rem 0;
-  border-bottom: 1px solid var(--color-rule-strong);
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-border-light);
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 1rem;
+  transition: all 0.2s ease;
+}
+
+.payeur-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.payeur-nom {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.payeur-montant {
+  font-weight: 600;
+  color: var(--color-primary);
+  font-size: 1.1rem;
+  white-space: nowrap;
 }
 
 .list li:last-child {
   border-bottom: none;
 }
 
+.list li:hover {
+  background: var(--color-bg-secondary);
+  transition: background-color 0.2s ease;
+}
+
 .btn {
   display: inline-block;
-  font-family: var(--font-body), sans-serif;
   font-size: 0.95rem;
   font-weight: 500;
-  padding: 0.6rem 1.3rem;
-  border-radius: 2px;
-  border: 1.5px solid transparent;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  border: none;
   cursor: pointer;
   text-decoration: none;
   line-height: 1.2;
+  transition: all 0.2s ease;
 }
 
 .btn-primary {
-  background-color: var(--color-ink);
-  color: var(--color-paper-light);
-  border-color: var(--color-ink);
+  background-color: var(--color-primary);
+  color: white;
+  transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-  background-color: var(--color-accent-dark);
-  border-color: var(--color-accent-dark);
+  background-color: var(--color-primary-dark);
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(74, 111, 165, 0.3);
 }
 
 .btn-secondary {
   background-color: transparent;
-  color: var(--color-ink);
-  border-color: var(--color-ink);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s ease;
 }
 
 .btn-secondary:hover {
-  background-color: var(--color-paper-light);
+  background-color: var(--color-bg-secondary);
+  text-decoration: none;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .btn:focus-visible,
 input:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(74, 111, 165, 0.1);
 }
 
 .form {
@@ -196,21 +448,23 @@ a:focus-visible {
   flex-direction: column;
   gap: 0.4rem;
   font-size: 0.9rem;
-  color: var(--color-ink-soft);
+  color: var(--color-text-muted);
+  font-weight: 500;
 }
 
 .form input {
-  font-family: var(--font-body), sans-serif;
   font-size: 1rem;
-  color: var(--color-ink);
-  background: var(--color-paper-light);
-  border: none;
-  border-bottom: 1.5px solid var(--color-rule-strong);
-  padding: 0.5rem 0.1rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  transition: border-color 0.2s ease;
 }
 
 .form input:focus {
-  border-bottom-color: var(--color-accent);
+  border-color: var(--color-primary);
+  outline: none;
 }
 
 .form .btn {
@@ -219,13 +473,13 @@ a:focus-visible {
 }
 
 .erreur {
-  color: var(--color-alert);
+  color: var(--color-danger);
   font-size: 0.9rem;
   margin: 0;
 }
 
 .info {
-  color: var(--color-accent-dark);
+  color: var(--color-primary);
   font-size: 0.9rem;
   margin: 0;
 }
@@ -234,27 +488,59 @@ a:focus-visible {
   display: inline-block;
   margin-top: 2.5rem;
   font-size: 0.9rem;
-  color: var(--color-ink-soft);
+  color: var(--color-text-muted);
   text-decoration: none;
 }
 
 .lien-retour:hover {
-  color: var(--color-ink);
+  color: var(--color-text);
   text-decoration: underline;
 }
 
 @media (max-width: 480px) {
   .container {
-    padding: 2rem 1.25rem 4rem;
+    padding: 1.5rem 1rem 3rem;
   }
 
   .header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.75rem;
+    gap: 1rem;
   }
 
   h1 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filtres-container {
+    grid-template-columns: 1fr;
+  }
+
+  .table thead th,
+  .table tbody td {
+    padding: 0.75rem;
+  }
+
+  .list li {
+    padding: 0.75rem;
+  }
+
+  .payeur-montant {
+    font-size: 1rem;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 0.5rem;
   }
 }
