@@ -64,32 +64,76 @@ export async function POST(request) {
 
     const subject = `Nouvelle ${typeOperation} : ${montantFormate} de ${nom}`;
     const html = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: ${montantNumerique >= 0 ? '#28a745' : '#dc3545'};">
-          Nouvelle ${typeOperation}
-        </h2>
-        <p>Bonjour,</p>
-        <p>Une nouvelle ${typeOperation} a été enregistrée :</p>
-        <ul>
-          <li><strong>Nom :</strong> ${nom}</li>
-          <li><strong>Montant :</strong> ${montantFormate}</li>
-          <li><strong>Type :</strong> ${typeOperation.charAt(0).toUpperCase() + typeOperation.slice(1)}</li>
-          <li><strong>Date :</strong> ${new Date(data.date_paiement).toLocaleDateString('fr-FR', {
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric',
-          })}</li>
-        </ul>
-        <p style="margin-top: 2rem;">
-          <a href="https://gestion-cotisation-virid.vercel.app/" 
-             style="background-color: #8B7355; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
-            Voir le registre des cotisations
-          </a>
-        </p>
-        <p style="color: #666; font-size: 0.9em; margin-top: 1.5rem;">
-          Ceci est un message automatique. Merci de ne pas répondre.
-        </p>
-      </div>
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nouvelle ${typeOperation}</title>
+      </head>
+      <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4;">
+          <tr>
+            <td align="center" style="padding: 20px;">
+              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border: 1px solid #dddddd;">
+                <tr>
+                  <td style="padding: 30px;">
+                    <h2 style="color: ${montantNumerique >= 0 ? '#28a745' : '#dc3545'}; margin: 0 0 20px 0; font-size: 24px;">
+                      Nouvelle ${typeOperation}
+                    </h2>
+                    <p style="margin: 0 0 15px 0; font-size: 14px; line-height: 1.5;">
+                      Bonjour,
+                    </p>
+                    <p style="margin: 0 0 15px 0; font-size: 14px; line-height: 1.5;">
+                      Une nouvelle ${typeOperation} a été enregistrée :
+                    </p>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin: 20px 0;">
+                      <tr>
+                        <td style="padding: 10px 0; border-bottom: 1px solid #eeeeee;">
+                          <strong>Nom :</strong> ${nom}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 10px 0; border-bottom: 1px solid #eeeeeee;">
+                          <strong>Montant :</strong> ${montantFormate}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 10px 0; border-bottom: 1px solid #eeeeeee;">
+                          <strong>Type :</strong> ${typeOperation.charAt(0).toUpperCase() + typeOperation.slice(1)}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 10px 0;">
+                          <strong>Date :</strong> ${new Date(data.date_paiement).toLocaleDateString('fr-FR', {
+                            day: '2-digit',
+                            month: 'long',
+                            year: 'numeric',
+                          })}
+                        </td>
+                      </tr>
+                    </table>
+                    <table role="presentation" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
+                      <tr>
+                        <td>
+                          <a href="https://gestion-cotisation-virid.vercel.app/" 
+                             style="background-color: #8B7355; color: #ffffff; padding: 12px 24px; text-decoration: none; display: inline-block; font-size: 14px;">
+                            Voir le registre des cotisations
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                    <p style="margin: 30px 0 0 0; font-size: 12px; color: #666666; line-height: 1.5;">
+                      Ceci est un message automatique. Merci de ne pas répondre.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
     `;
 
     // Attendre que tous les emails soient envoyés avant de retourner la réponse
