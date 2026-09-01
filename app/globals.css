@@ -612,11 +612,16 @@ a:focus-visible {
 .utilisateur-actions {
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
-@media (max-width: 480px) {
+.utilisateur-actions .btn {
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
   .container {
-    padding: 1.5rem 1rem 3rem;
+    padding: 2rem 1rem 4rem;
   }
 
   .header {
@@ -625,8 +630,100 @@ a:focus-visible {
     gap: 1rem;
   }
 
+  .header .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .tabs-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+
+  .tabs-container::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .tabs-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .tabs-container::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 2px;
+  }
+
+  .tab {
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .utilisateur-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .utilisateur-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .utilisateur-actions .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .form {
+    max-width: 100%;
+  }
+
+  .form .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .filtres-container {
+    grid-template-columns: 1fr;
+  }
+
+  .filtres-container .btn {
+    width: 100%;
+  }
+
+  .resume-annuel {
+    grid-template-columns: 1fr;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cards-row {
+    flex-direction: column;
+  }
+
+  .cards-row .card {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1.5rem 1rem 3rem;
+  }
+
   h1 {
     font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.1rem;
   }
 
   .section-header {
@@ -635,17 +732,10 @@ a:focus-visible {
     gap: 0.5rem;
   }
 
-  .cards-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .filtres-container {
-    grid-template-columns: 1fr;
-  }
-
   .table thead th,
   .table tbody td {
     padding: 0.75rem;
+    font-size: 0.85rem;
   }
 
   .list li {
@@ -659,5 +749,20 @@ a:focus-visible {
   .pagination {
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  .pagination .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .btn {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
   }
 }
