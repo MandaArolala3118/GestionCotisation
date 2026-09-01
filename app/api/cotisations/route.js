@@ -113,13 +113,45 @@ export async function POST(request) {
                         </td>
                       </tr>
                     </table>
-                    <table role="presentation" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin: 30px 0;">
                       <tr>
-                        <td>
-                          <a href="https://gestion-cotisation-virid.vercel.app/" 
-                             style="background-color: #8B7355; color: #ffffff; padding: 12px 24px; text-decoration: none; display: inline-block; font-size: 14px;">
+                        <td align="left">
+
+                          <!--[if mso]>
+                          <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml"
+                            xmlns:w="urn:schemas-microsoft-com:office:word"
+                            href="https://gestion-cotisation-virid.vercel.app/"
+                            style="height:42px;v-text-anchor:middle;width:250px;"
+                            arcsize="0%"
+                            strokecolor="#8B7355"
+                            fillcolor="#8B7355">
+                            <w:anchorlock/>
+                            <center style="color:#ffffff;font-family:Arial,sans-serif;font-size:14px;font-weight:bold;">
+                              Voir le registre des cotisations
+                            </center>
+                          </v:roundrect>
+                          <![endif]-->
+
+                          <!--[if !mso]><!-->
+                          <a href="https://gestion-cotisation-virid.vercel.app/"
+                            style="
+                              background-color:#8B7355;
+                              border:1px solid #8B7355;
+                              color:#ffffff;
+                              display:inline-block;
+                              font-family:Arial,sans-serif;
+                              font-size:14px;
+                              font-weight:bold;
+                              line-height:42px;
+                              text-align:center;
+                              text-decoration:none;
+                              width:250px;
+                              -webkit-text-size-adjust:none;
+                            ">
                             Voir le registre des cotisations
                           </a>
+                          <!--<![endif]-->
+
                         </td>
                       </tr>
                     </table>
